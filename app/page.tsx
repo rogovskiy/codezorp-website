@@ -1,101 +1,91 @@
 import Image from "next/image";
+import Dots from "./dots";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  return (<>
+    <main className="flex-shrink-0">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white py-3">
+        <div className="container px-5">
+            <a className="navbar-brand" href="index.html"><span className="fw-bolder text-primary">Code Zorp</span></a>
+            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></button>
+            <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul className="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
+                    <li className="nav-item"><a className="nav-link" href="index.html">Home</a></li>
+                    <li className="nav-item"><a className="nav-link" href="projects.html">How does it work?</a></li>
+                    <li className="nav-item"><a className="nav-link" href="contact.html">Contact</a></li>
+                </ul>
+            </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+    </nav>
+    <header className="py-5">
+        <div className="container px-5 pb-5">
+            <div className="row gx-5 align-items-center">
+                <div className="col-xxl-5">
+                    <div className="text-center text-xxl-start">
+                        <div className="badge bg-gradient-primary-to-secondary text-white mb-4"><div className="text-uppercase">Design &middot; Development &middot; Marketing</div></div>
+                        <div className="fs-3 fw-light text-muted">I can help your business to</div>
+                        <h1 className="display-3 fw-bolder mb-5"><span className="text-gradient d-inline">Get online and grow fast</span></h1>
+                        <div className="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
+                            <a className="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" href="resume.html">Integrate with GitHub</a>
+                            <a className="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" href="projects.html">Integrate with BitBucket</a>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-xxl-7">
+                    <div className="d-flex justify-content-center mt-5 mt-xxl-0">
+                        <div className="profile bg-gradient-primary-to-secondary">
+                            <img className="profile-img" src="codezorp.png" alt="..." />
+                            <div className="dots-1">
+                              <Dots />
+                            </div>
+                            <div className="dots-2">
+                              <Dots />
+                            </div>
+                            <div className="dots-3">
+                              <Dots />
+                            </div>
+                            <div className="dots-4">
+                              <Dots />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section className="bg-light py-5">
+        <div className="container px-5">
+            <div className="row gx-5 justify-content-center">
+                <div className="col-xxl-8">
+                    <div className="text-center my-5">
+                        <h2 className="display-5 fw-bolder"><span className="text-gradient d-inline">How does it work?</span></h2>
+                        <p className="lead fw-light mb-4">My name is Start Bootstrap and I help brands grow.</p>
+                        <p className="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugit dolorum itaque qui unde quisquam consequatur autem. Eveniet quasi nobis aliquid cumque officiis sed rem iure ipsa! Praesentium ratione atque dolorem?</p>
+                        <div className="d-flex justify-content-center fs-2 gap-4">
+                            <a className="text-gradient" href="#!"><i className="bi bi-twitter"></i></a>
+                            <a className="text-gradient" href="#!"><i className="bi bi-linkedin"></i></a>
+                            <a className="text-gradient" href="#!"><i className="bi bi-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<footer className="bg-white py-4 mt-auto">
+    <div className="container px-5">
+        <div className="row align-items-center justify-content-between flex-column flex-sm-row">
+            <div className="col-auto"><div className="small m-0">Copyright &copy; Your Website 2023</div></div>
+            <div className="col-auto">
+                <a className="small" href="#!">Privacy</a>
+                <span className="mx-1">&middot;</span>
+                <a className="small" href="#!">Terms</a>
+                <span className="mx-1">&middot;</span>
+                <a className="small" href="#!">Contact</a>
+            </div>
+        </div>
     </div>
+</footer>
+</>
   );
 }
