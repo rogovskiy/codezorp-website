@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Dots from "./dots";
 
 export default function Home() {
@@ -35,7 +34,8 @@ export default function Home() {
                 <div className="col-xxl-5">
                     <div className="d-flex justify-content-center mt-5 mt-xxl-0">
                         <div className="profile bg-gradient-primary-to-secondary">
-                            <img className="profile-img" src="codezorp.png" alt="..." />
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img className="profile-img" src="codezorp.png" alt="..." />
                             <div className="dots-1">
                               <Dots />
                             </div>
