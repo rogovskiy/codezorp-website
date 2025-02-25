@@ -2,20 +2,6 @@ import Dots from "./dots";
 
 export default function Home() {
   return (<>
-    <main className="flex-shrink-0">
-    <nav className="navbar navbar-expand-lg navbar-light bg-white py-3">
-        <div className="container px-5">
-            <a className="navbar-brand" href="index.html"><span className="fw-bolder text-dark">CodeZorp.ai</span></a>
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></button>
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul className="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-                    <li className="nav-item"><a className="nav-link" href="projects.html">How does it work?</a></li>
-                    <li className="nav-item"><a className="nav-link" href="index.html">Blog</a></li>
-                    <li className="nav-item"><a className="nav-link" href="contact.html">Contact</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
     <header className="py-0">
         <div className="container px-5 pb-5">
             <div className="row gx-5 align-items-center">
@@ -65,7 +51,7 @@ export default function Home() {
             </div>
             <div className="row gx-5 justify-content-center my-2">
                 <div className="col-xxl-5">
-                    <p className="lead fw-light my-2">It takes 10 min to get started</p>
+                    <p className="lead fw-light my-2">Takes 10 min to get started</p>
                     <ul className="list-group text-left">
                       <li className="list-group-item"><b>Integrate:</b> Connect with GitHub, Bitbucket, or GitLab. </li>
                       <li className="list-group-item"><b>Review:</b> AI bot reviews every pull request.</li>                              
@@ -86,21 +72,51 @@ export default function Home() {
             </div>
         </div>       
     </section>
-</main>
-<footer className="bg-white py-4 mt-auto">
-    <div className="container px-5">
-        <div className="row align-items-center justify-content-between flex-column flex-sm-row">
-            <div className="col-auto"><div className="small m-0">Copyright &copy; Your CodeZorp 2025  </div></div>
-            <div className="col-auto">
-                <a className="small text-dark" href="#!">Privacy</a>
-                <span className="mx-1">&middot;</span>
-                <a className="small text-dark" href="#!">Terms</a>
-                <span className="mx-1">&middot;</span>
-                <a className="small text-dark" href="#!">Contact</a>
+    <section className="py-3">
+        <div className="container px-5">
+            <div className="row gx-5 justify-content-center">
+                <div className="col-xxl-8">
+                    <div className="my-5">
+                      <h2 className="text-center display-5 fw-bolder"><span className="text-gradient d-inline">Results</span></h2>
+                      <p className="text-muted lead">Average review time is 1 minute 38 seconds. Every third review identifies a logical issue.</p>
+                      </div>
+                </div>
+            </div>
+            <div className="row gx-5 justify-content-center my-2">
+                <div className="col-xxl-5">
+                    <p className="lead fw-light my-2">29 code reviews completed since launch</p>
+<div className="progress my-3">
+  <div className="progress-bar" role="progressbar" style={{width: "100%", backgroundColor: "#1f6f6f" }} > Java </div>
+</div>
+<div className="progress my-3">
+  <div className="progress-bar" role="progressbar" style={{width: "80%", backgroundColor: "#1f6f6f"}}>HTML</div>
+</div>
+<div className="progress my-3">
+  <div className="progress-bar" role="progressbar" style={{width: "78%", backgroundColor: "#1f6f6f"}} >Python</div>
+</div>
+<div className="progress my-3">
+  <div className="progress-bar" role="progressbar" style={{width: "50%", backgroundColor: "#1f6f6f"}} >Javascript</div>
+</div>
+                </div>
+                <div className="col-xxl-5">
+                    <p className="lead fw-light my-2">Top comment categories</p>
+<div className="progress my-3">
+  <div className="progress-bar" role="progressbar" style={{width: "56%", backgroundColor: "#c99b38"}}>Correctness / Logic</div>
+</div>
+<div className="progress my-3">
+  <div className="progress-bar" role="progressbar" style={{width: "78%", backgroundColor: "#1f6f6f"}}>Security</div>
+</div>
+<div className="progress my-3 text-right">
+  <div className="progress-bar" role="progressbar" style={{width: "100%", backgroundColor: "#2066a8" }}> Maintainability </div>
+</div>
+
+<div className="progress my-3">
+  <div className="progress-bar" role="progressbar" style={{width: "50%", backgroundColor: "#5e4c5f"}}>Test Coverage</div>
+</div>
+                </div>
             </div>
         </div>
-    </div>
-</footer>
+      </section>
 </>
   );
 }

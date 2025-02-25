@@ -40,7 +40,41 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased d-flex flex-column h-100`}
       >
+            <main className="flex-shrink-0">
+              <nav className="navbar navbar-expand-lg navbar-light bg-white py-3">
+                  <div className="container px-5">
+                      <a className="navbar-brand position-relative" href="index.html">
+                        <span className="fw-bolder text-dark">CodeZorp.ai</span>   
+                        <span className="position-absolute top-0 start-120 badge rounded-pill bg-success" style={{fontSize:"12px"}}>
+                        Beta
+                        <span className="visually-hidden">beta label</span>
+                      </span></a>
+                      <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></button>
+                      <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                          <ul className="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
+                              <li className="nav-item"><a className="nav-link" href="projects.html">How does it work?</a></li>
+                              <li className="nav-item"><a className="nav-link" href="index.html">Blog</a></li>
+                              <li className="nav-item"><a className="nav-link" href="contact.html">Contact</a></li>
+                          </ul>
+                      </div>
+                  </div>
+              </nav>
         {children}
+        </main>
+        <footer className="bg-white py-4 mt-auto">
+            <div className="container px-5">
+                <div className="row align-items-center justify-content-between flex-column flex-sm-row">
+                    <div className="col-auto"><div className="small m-0">Copyright &copy; Your CodeZorp 2025  </div></div>
+                    <div className="col-auto">
+                        <a className="small text-dark" href="#!">Privacy</a>
+                        <span className="mx-1">&middot;</span>
+                        <a className="small text-dark" href="#!">Terms</a>
+                        <span className="mx-1">&middot;</span>
+                        <a className="small text-dark" href="#!">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
         <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossOrigin="anonymous"></Script>
       </body>
     </html>
