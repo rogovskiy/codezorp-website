@@ -11555,12 +11555,12 @@ html {
 }
 
 .bg-gradient-primary-to-secondary {
-  background: #1e30f3;
-  background: linear-gradient(135deg, #1e30f3 0%, #e21e80 100%);
+  background: #e0e0e0;
+  background: linear-gradient(135deg, #fff 0%, #fff 100%);
 }
 
 .text-gradient {
-  background: -webkit-linear-gradient(315deg, #1e30f3 0%, #e21e80 100%);
+  background: -webkit-linear-gradient(315deg, #333 0%, #55bdc6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -11583,7 +11583,7 @@ html {
   height: 75vw;
   width: 75vw;
   border-radius: 5vw;
-  margin-top: 5vw;
+  /* margin-top: 5vw; */
   max-height: 40rem;
   max-width: 40rem;
 }
@@ -11602,7 +11602,7 @@ html {
   top: 4vw;
 }
 .profile .dots-1 svg {
-  fill: #fff;
+  fill: #999;
 }
 .profile .dots-2 {
   position: absolute;
@@ -11611,7 +11611,7 @@ html {
   top: 6.05vw;
 }
 .profile .dots-2 svg {
-  fill: #1e30f3;
+  fill: #55bdb6;
 }
 .profile .dots-3 {
   position: absolute;
@@ -11620,7 +11620,7 @@ html {
   bottom: 6.05vw;
 }
 .profile .dots-3 svg {
-  fill: #fff;
+  fill: #999;
 }
 .profile .dots-4 {
   position: absolute;
@@ -11629,7 +11629,7 @@ html {
   bottom: 4vw;
 }
 .profile .dots-4 svg {
-  fill: #1e30f3;
+  fill: #55bdb6;
 }
 
 @media (min-width: 576px) {
