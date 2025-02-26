@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,12 +44,12 @@ export default function RootLayout({
             <main className="flex-shrink-0">
               <nav className="navbar navbar-expand-lg navbar-light bg-white py-3">
                   <div className="container px-5">
-                      <a className="navbar-brand position-relative" href="index.html">
+                      <Link className="navbar-brand position-relative" href="/">
                         <span className="fw-bolder text-dark">CodeZorp.ai</span>   
                         <span className="position-absolute top-0 start-120 badge rounded-pill bg-success" style={{fontSize:"12px"}}>
                         Beta
                         <span className="visually-hidden">beta label</span>
-                      </span></a>
+                      </span></Link>
                       <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></button>
                       <div className="collapse navbar-collapse" id="navbarSupportedContent">
                           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
