@@ -34,7 +34,7 @@ export const getPullRequests = async (installationId: string) => {
         const firstRepo = repoResult.data.repositories[0];
         organizationName = firstRepo.full_name.split('/')[0];
 
-        const mostRecentRepos = repoResult.data.repositories.sort(r => r.id).slice(0, 10);
+        const mostRecentRepos = repoResult.data.repositories.sort(r => -r.id).slice(0, 10);
         const prResults = await Promise.all(mostRecentRepos.map(async (r) => {
             return installationOctokit.request('GET /repos/{owner}/{repo}/pulls', {
                 owner: r.owner.login,
