@@ -1,9 +1,19 @@
 'use server';
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { PutCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 
 const TABLE_NAME = "codezorp-dev";
+
+export type ReviewResult = {
+  category: string
+  severity: string
+  file: string
+  line_number: number
+  problem: string
+  suggestion: string
+  clarifying_question: string
+}
 
 const ddbClient = new DynamoDBClient({
    region: "us-east-1",
@@ -13,17 +23,70 @@ const ddbClient = new DynamoDBClient({
    },
  });
 
-export const createIntegration = async (integration: string) => {
-    const command = new PutCommand({
+ export const createGitHubInstallation = async (repo: string, installationId: string) => {
+   const now = new Date().toUTCString();
+   const pk = `intg-gh-${repo}-${installationId}`;
+   const command = new PutCommand({
        TableName: TABLE_NAME,
        Item: {
-          pk: `intg-${integration}`,
-          sk: `test`,
-          books: {} // no books for new user, an empty object
+          pk: pk,
+          sk: "integration",
+          type: "github",
+          installationId: installationId,
+          createdAt: now,
+          updateAt: now
        },
-       // ReturnValues: 'ALL_OLD',
+      //  ReturnValues: 'ALL_OLD',
     })
-    const response = await ddbClient.send(command);
-    console.log(response);
-    return response
+    await ddbClient.send(command);
+    return pk;
+}
+
+export async function checkResultsInDb(messageId: string, integrationId: string) {
+  const command = new GetCommand({
+    TableName: TABLE_NAME,
+    Key: {
+       pk: `msg-${messageId}`,
+       sk: integrationId,
+    }
+  })
+  const response = await ddbClient.send(command);
+  if (response.Item) {
+    // console.log("AAA",response.Item)
+    return JSON.parse(response.Item.response).map((item: { issue: ReviewResult; }) => item.issue as ReviewResult);
+  } else {
+    return null;
+  }
+}
+
+export async function checkCachedResults(integrationId: string, prUniqueId: string) {
+  const command = new GetCommand({
+    TableName: TABLE_NAME,
+    Key: {
+       pk: integrationId,
+       sk: `review-${prUniqueId}`,
+    }
+  })
+  const response = await ddbClient.send(command);
+  if (response.Item) {
+    // console.log("AAA",response.Item)
+    return JSON.parse(response.Item.response).map((item: { issue: ReviewResult; }) => item.issue as ReviewResult);
+  } else {
+    return null;
+  }
+}
+
+export const saveFeedback = async (integrationId: string, uniqueId: string, feedback: string) => {
+  const now = new Date().toUTCString();
+  const command = new PutCommand({
+      TableName: TABLE_NAME,
+      Item: {
+         pk: integrationId,
+         sk: `feedback-${uniqueId}`,
+         feedback: feedback,
+         createdAt: now,
+      },
+     //  ReturnValues: 'ALL_OLD',
+   })
+   await ddbClient.send(command);
 }

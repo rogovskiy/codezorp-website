@@ -1,9 +1,12 @@
 'use client';
 
-import { getPullRequests, GitHubExlorationData } from "@/src/github";
+import { getPullRequests, GitHubExlorationData, PullRequestData, writeCommentsToGithub } from "@/src/github";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { timeAgo } from "@/src/timeago";
+import { checkCachedResults, checkResultsInDb, createGitHubInstallation, ReviewResult, saveFeedback } from "@/src/db";
+import { requestCodeReview } from "@/src/sqs";
+import { Alert, Badge, Button, Card, ListGroup, Offcanvas, ProgressBar } from "react-bootstrap";
 
 
 export default function GitHubInstallWithSuspense() {
@@ -14,11 +17,33 @@ export default function GitHubInstallWithSuspense() {
   )
 }
 
+type PrReview = {
+  pr: PullRequestData
+  messageId: string
+  numberOfChecks: number
+  result: ReviewResult[]|null
+}
+
+const getBadgeColor = (severity: string) => {
+  switch (severity.toLowerCase()) {
+    case 'high':
+      return 'danger'; // Red badge for high priority
+    case 'medium':
+      return 'warning'; // Yellow badge for medium priority
+    case 'low':
+      return 'success'; // Green badge for low priority
+    default:
+      return 'secondary'; // Gray badge for unknown priority
+  }
+}
+
 const GitHubInstall = () => {
 
    // http://localhost:3000/github-install?installation_id=61691079&setup_action=install
   const searchParams = useSearchParams();
   const [data, setData] = useState<GitHubExlorationData|null>(null);
+  const [integrationId, setIntegrationId] = useState<string|null>(null);
+  const [openPr, setOpenPr] = useState<PrReview|null>(null);
 
   const installationId = searchParams?.get("installation_id");
 
@@ -26,11 +51,35 @@ const GitHubInstall = () => {
     const triggerLoad = async () => {
       if (installationId !== null && installationId !== undefined) {
         const d = await getPullRequests(installationId);
+        if (d.organizationName != null) {
+          const id = await createGitHubInstallation(d.organizationName, installationId);
+          setIntegrationId(id);
+        }
         setData(d);
       }
     }
     triggerLoad();
-  }, [ setData, installationId ]);
+  }, [ setData, setIntegrationId, installationId ]);
+  // refresh timer
+  const checkResults = useCallback(async (messageId:string) => {
+    // console.log("Check", openPr)
+    if (openPr !== null && openPr.result === null) {
+      const results = await checkResultsInDb(messageId, integrationId!);
+      if (results != null) {
+        setOpenPr({ ...openPr, result: results });
+      } else {
+        setOpenPr({ ...openPr, numberOfChecks: openPr.numberOfChecks+1 });
+      }
+    }
+  }, [ setOpenPr, openPr, integrationId ]);
+  useEffect(() => {
+      if (openPr?.result === null) {
+        const timer = setTimeout(() => {
+          checkResults(openPr.messageId);
+        }, 1000);
+        return () => { clearInterval(timer) }; 
+      }
+    }, [openPr, checkResults]);
 
   if (installationId === null || installationId === undefined) {
     return (
@@ -39,6 +88,52 @@ const GitHubInstall = () => {
           <h1>Something went wrong. Please retry the installation</h1>
         </div></div>);
   }
+
+  const handleImportToGitHub = () => {
+    const trigger = async () => {
+       await writeCommentsToGithub(installationId, openPr!.pr, openPr!.result!);
+       window.open(openPr!.pr.html_url + "/files", "_blank");
+    }
+    trigger();
+  }
+
+  const handleVisitGitHub = (pr: PullRequestData) => {
+    window.open(pr.html_url + "/files", "_blank");
+  }
+
+  const handleFeedback = (pr: PullRequestData, feedback: string) => {
+    const trigger = async () => { 
+      await saveFeedback(integrationId!, pr.unique_id, feedback);
+    }
+    trigger();
+  }
+
+  const handleRequestReview = (pr: PullRequestData) => {
+      const trigger = async () => {
+        const cached = await checkCachedResults(integrationId!, pr.unique_id);
+        if (cached) {
+          setOpenPr({
+            pr: pr,
+            messageId: "cached", 
+            numberOfChecks: 0,
+            result: cached
+          });
+          return;
+        }
+
+        const messageId = await requestCodeReview(integrationId!, pr.html_url, pr.unique_id);
+        // console.log("posted", messageId);
+        if (messageId !== null && messageId !== undefined) {
+          setOpenPr({
+            pr: pr,
+            messageId: messageId, 
+            numberOfChecks: 0,
+            result: null
+          });
+        }
+      };
+      trigger();
+  };
 
   return (<>
     <section className="bg-light py-3">
@@ -70,42 +165,57 @@ const GitHubInstall = () => {
     <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
 
       {data.pullRequests.map((pr) => (<div className="col" key={pr.id}>
-        <div className="card pr-card">
-          <div className="card-body">
-            <h5 className="card-title">#{pr.id} {pr.title}</h5>
-            <p className="card-text text-muted">Repo: {pr.repo} Updated: {timeAgo(pr.updatedAt) as string}</p>
+        <Card>
+          <Card.Body>
+            <Card.Title>#{pr.id} {pr.title}</Card.Title>
+            <Card.Text className="text-muted">Repo: {pr.repo} Updated: {timeAgo(pr.updatedAt) as string}</Card.Text>
             <span className="badge bg-warning">{pr.state}</span>
             <div className="mt-3">
-              <button className="btn btn-sm" style={{backgroundColor:"#55bdc6"}} data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Zorp Review</button>&nbsp;
-              <button className="btn btn-secondary btn-sm"><i className="bi bi-box-arrow-up-right" /> View in GitHub</button>
+              <button className="btn btn-sm" style={{backgroundColor:"#55bdc6"}} onClick={() =>handleRequestReview(pr)}>Zorp Review</button>&nbsp;
+              <button className="btn btn-secondary btn-sm" onClick={() => handleVisitGitHub(pr)}><i className="bi bi-box-arrow-up-right" /> View in GitHub</button>
             </div>
-          </div>
-        </div>
+          </Card.Body>
+        </Card>
       </div>))}
 
     {/* <div className="text-center mb-4">
       <button className="btn btn-outline-primary">Load More</button>
     </div> */}
     </div>
+<Offcanvas show={openPr !== null} onHide={() => setOpenPr(null)} placement="bottom" style={{height:"75%"}}>
+  <Offcanvas.Header closeButton>
+    <Offcanvas.Title>Zorp Review {openPr !== null ? `#${openPr.pr.id} ${openPr.pr.title}` : ''}</Offcanvas.Title> 
+  </Offcanvas.Header>
+  <Offcanvas.Body>
+    {openPr?.result === null && <div>
+      <p>Review typically takes about 45 seconds</p>
+      <ProgressBar striped animated variant="info" now={Math.min(100, openPr.numberOfChecks * 5) } />
+    </div>}
+    {openPr?.result !== null && <div>
+      <ListGroup>
+        {openPr?.result.map((issue:ReviewResult, index:number) => (
+          <ListGroup.Item key={'issues' + index}>
+            <h5><strong>File:</strong> {issue.file}:{issue.line_number} Category: {issue.category} <Badge  bg={getBadgeColor(issue.severity)}>{issue.severity}</Badge></h5>
+            <p><strong>Problem:</strong> {issue.problem}</p>
+            <p><strong>Suggestion:</strong> {issue.suggestion}</p>
+            {/* {issue.clarifying_question && (
+              <p><strong>Clarifying Question:</strong> {issue.clarifying_question}</p>
+            )} */}
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
 
-<div className="offcanvas offcanvas-bottom" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-  <div className="offcanvas-header">
-    <h5 className="offcanvas-title" id="offcanvasExampleLabel">Zorp Review</h5>
-    <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div className="offcanvas-body">
-    <div>
-      Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.
-    </div>
-    <div className="mt-3 row">
-      <div className="col-md-2"><button className="btn btn-dark">Post Review to GitHub</button></div>
-      <div className="col-md-6">Don&apos;t forget your feedback - 
-      <button className="btn btn-light"><i className="bi bi-hand-thumbs-up-fill" style={{color: "#ffcb4c"}}></i></button>&nbsp;
-      <button className="btn btn-light"><i className="bi bi-hand-thumbs-down-fill" style={{color: "#ffcb4c"}}></i></button>
-      </div>
-    </div>
-  </div>
-</div>
+      <Alert color="info" className="my-2 w-auto" style={{display: 'inline-block'}}><i className="bi bi-lightbulb"></i> For a better experience, view the review on GitHub.</Alert>
+      <div className="mt-3 row">
+          <div className="col-md-2"><Button variant="dark" onClick={() => handleImportToGitHub()}><i className="bi bi-box-arrow-up-right" /> View in GitHub</Button></div>
+          <div className="col-md-6">Don&apos;t forget your feedback - 
+            <Button variant="light" onClick={() => handleFeedback(openPr!.pr, "good")}><i className="bi bi-hand-thumbs-up-fill" style={{color: "#ffcb4c"}}></i></Button>&nbsp;
+            <Button variant="light" onClick={() => handleFeedback(openPr!.pr, "bad")}><i className="bi bi-hand-thumbs-down-fill" style={{color: "#ffcb4c"}}></i></Button>
+         </div>
+        </div>
+      </div>}
+  </Offcanvas.Body>
+</Offcanvas>
 
 </div>}
 </>

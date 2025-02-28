@@ -10,11 +10,14 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.751.0",
+    "@aws-sdk/client-sqs": "^3.750.0",
     "@aws-sdk/lib-dynamodb": "^3.751.0",
     "@aws-sdk/util-dynamodb": "^3.751.0",
+    "newrelic": "^12.14.0",
     "next": "15.1.6",
     "octokit": "^4.1.2",
     "react": "^19.0.0",
+    "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
