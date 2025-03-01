@@ -6,7 +6,7 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 import { timeAgo } from "@/src/timeago";
 import { checkCachedResults, checkResultsInDb, createGitHubInstallation, ReviewResult, saveFeedback } from "@/src/db";
 import { requestCodeReview } from "@/src/sqs";
-import { Alert, Badge, Button, Card, ListGroup, Offcanvas, ProgressBar } from "react-bootstrap";
+import { Badge, Button, Card, Col, ListGroup, Offcanvas, ProgressBar, Row } from "react-bootstrap";
 
 
 export default function GitHubInstallWithSuspense() {
@@ -140,7 +140,7 @@ const GitHubInstall = () => {
         <div className="text-center mb-4">
           <h1><span className="text-gradient d-inline">Installation Successful!</span></h1>
           {data && <>
-          <p className="lead">You&apos;ve successfully connected your GitHub account to <strong className="font-weight-bold">{data.organizationName}</strong>.</p>
+          <p className="lead mx-3">You&apos;ve successfully connected your GitHub account to <strong className="font-weight-bold">{data.organizationName}</strong>. The bot will review all new PRs in the selected projects, you don&apos;t need to do anything else.</p>
           <p className="lead">Explore your GitHub PRs and reviews.</p>
           <p className="small"><i>You can close this page at any time when you are done exploring</i></p>
           </>}
@@ -191,7 +191,8 @@ const GitHubInstall = () => {
       <p>Review typically takes about a minute</p>
       <ProgressBar striped animated variant="info" now={Math.min(100, openPr.numberOfChecks * 3) } />
     </div>}
-    {openPr?.result !== null && <div>
+    {openPr?.result !== null && <Row>
+      <Col md="8">
       <ListGroup>
         {openPr?.result.map((issue:ReviewResult, index:number) => (
           <ListGroup.Item key={'issues' + index}>
@@ -204,16 +205,16 @@ const GitHubInstall = () => {
           </ListGroup.Item>
         ))}
       </ListGroup>
-
-      <Alert color="info" className="my-2 w-auto" style={{display: 'inline-block'}}><i className="bi bi-lightbulb"></i> For a better experience, view the review on GitHub.</Alert>
-      <div className="mt-3 row">
-          <div className="col-md-2"><Button variant="dark" onClick={() => handleImportToGitHub()}><i className="bi bi-box-arrow-up-right" /> View in GitHub</Button></div>
-          <div className="col-md-6">Don&apos;t forget your feedback - 
+      </Col>
+      <Col  md="4">
+        <p>For a better experience, view the review on GitHub.</p>
+          <div className="text-center my-3"><Button variant="dark" onClick={() => handleImportToGitHub()}><i className="bi bi-box-arrow-up-right" /> View in GitHub</Button></div>
+          <div className="text-center">Don&apos;t forget your feedback - 
             <Button variant="light" onClick={() => handleFeedback(openPr!.pr, "good")}><i className="bi bi-hand-thumbs-up-fill" style={{color: "#ffcb4c"}}></i></Button>&nbsp;
             <Button variant="light" onClick={() => handleFeedback(openPr!.pr, "bad")}><i className="bi bi-hand-thumbs-down-fill" style={{color: "#ffcb4c"}}></i></Button>
          </div>
-        </div>
-      </div>}
+        </Col>  
+      </Row>}
   </Offcanvas.Body>
 </Offcanvas>
 
