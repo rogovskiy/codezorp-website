@@ -6,7 +6,7 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 import { timeAgo } from "@/src/timeago";
 import { checkCachedResults, checkResultsInDb, createGitHubInstallation, ReviewResult, saveFeedback } from "@/src/db";
 import { requestCodeReview } from "@/src/sqs";
-import { Alert, Badge, Button, Card, Col, ListGroup, Offcanvas, ProgressBar, Row } from "react-bootstrap";
+import { Badge, Button, Card, Col, ListGroup, Offcanvas, ProgressBar, Row } from "react-bootstrap";
 
 
 export default function GitHubInstallWithSuspense() {
