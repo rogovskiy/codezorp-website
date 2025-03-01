@@ -3,6 +3,8 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 
+const newrelic = require("newrelic");
+
 const TABLE_NAME = "codezorp-dev";
 
 export type ReviewResult = {
@@ -78,16 +80,19 @@ export async function checkCachedResults(integrationId: string, prUniqueId: stri
 }
 
 export const saveFeedback = async (integrationId: string, uniqueId: string, feedback: string) => {
-  const now = new Date().toUTCString();
-  const command = new PutCommand({
-      TableName: TABLE_NAME,
-      Item: {
-         pk: integrationId,
-         sk: `feedback-${uniqueId}`,
-         feedback: feedback,
-         createdAt: now,
-      },
-     //  ReturnValues: 'ALL_OLD',
-   })
-   await ddbClient.send(command);
+  newrelic.recordCustomEvent('Feedback', {
+    feedback, integrationId, uniqueId
+  });
+  // const now = new Date().toUTCString();
+  // const command = new PutCommand({
+  //     TableName: TABLE_NAME,
+  //     Item: {
+  //        pk: integrationId,
+  //        sk: `feedback-${uniqueId}`,
+  //        feedback: feedback,
+  //        createdAt: now,
+  //     },
+  //    //  ReturnValues: 'ALL_OLD',
+  //  })
+  //  await ddbClient.send(command);
 }
