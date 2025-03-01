@@ -3,6 +3,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const newrelic = require("newrelic");
 
 const TABLE_NAME = "codezorp-dev";
