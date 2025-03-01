@@ -188,8 +188,8 @@ const GitHubInstall = () => {
   </Offcanvas.Header>
   <Offcanvas.Body>
     {openPr?.result === null && <div>
-      <p>Review typically takes about 45 seconds</p>
-      <ProgressBar striped animated variant="info" now={Math.min(100, openPr.numberOfChecks * 5) } />
+      <p>Review typically takes about a minute</p>
+      <ProgressBar striped animated variant="info" now={Math.min(100, openPr.numberOfChecks * 3) } />
     </div>}
     {openPr?.result !== null && <div>
       <ListGroup>
