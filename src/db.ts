@@ -69,8 +69,9 @@ export async function checkCachedResults(integrationId: string, prUniqueId: stri
   })
   const response = await ddbClient.send(command);
   if (response.Item) {
+    const parsed = JSON.parse(response.Item.response);
     // console.log("AAA",response.Item)
-    return JSON.parse(response.Item.response).map((item: { issue: ReviewResult; }) => item.issue as ReviewResult);
+    return parsed.map((item: { issue: ReviewResult; }) => item.issue as ReviewResult);
   } else {
     return null;
   }
